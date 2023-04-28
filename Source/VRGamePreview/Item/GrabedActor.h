@@ -1,26 +1,58 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GrabInterface.h"
 #include "GameFramework/Actor.h"
+#include "MotionControllerComponent.h"
 #include "GrabedActor.generated.h"
 
+
+
+
 UCLASS()
-class VRGAMEPREVIEW_API AGrabedActor : public AActor
+class VRGAMEPREVIEW_API AGrabedActor : public AActor, public IGrabInterface
 {
 	GENERATED_BODY()
 	
-public:	
-	// Sets default values for this actor's properties
-	AGrabedActor();
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components)
+	class UStaticMeshComponent* StaticMesh = nullptr;
 
 protected:
-	// Called when the game starts or when spawned
+	AGrabedActor();
+	
 	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
+	
 	virtual void Tick(float DeltaTime) override;
+
+public:
+	
+	UFUNCTION(BlueprintCallable)
+	void Fire();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "GrabInterface")
+	void Grab(class UMotionControllerComponent* MotionController);
+
+	virtual void Grab_Implementation(class UMotionControllerComponent* MotionController) override;
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "GrabInterface")
+	void Drop(class UMotionControllerComponent* MotionController);
+
+	virtual void Drop_Implementation(class UMotionControllerComponent* MotionController) override;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "GrabInterface")
+	void TriggerPressed (class UMotionControllerComponent* MotionController);
+
+	virtual void TriggerPressed_Implementation(class UMotionControllerComponent* MotionController) override;
+
+protected:
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grab")
+	bool bUsing = false;
+
+	bool bSimulatePhysics;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Grab")
+	class UMotionControllerComponent* CurrentMotionController;
 
 };
