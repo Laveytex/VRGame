@@ -17,7 +17,13 @@ class VRGAMEPREVIEW_API AGrabedActor : public AActor, public IGrabInterface
 	
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components)
+	class USceneComponent* SceneComponent = nullptr;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components)
 	class UStaticMeshComponent* StaticMesh = nullptr;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components)
+	class USkeletalMeshComponent* SkeletalMesh = nullptr;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components)
+	class UBoxComponent* InteractBox = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	EAttachState AttachState = EAttachState::Snap;
@@ -29,10 +35,13 @@ protected:
 	
 	virtual void Tick(float DeltaTime) override;
 
+	void MeshInit();
+
 public:
 	
-	UFUNCTION(BlueprintCallable)
+	/*UFUNCTION(BlueprintCallable)
 	void Fire();
+	*/
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "GrabInterface")
 	void Grab(class UMotionControllerComponent* MotionController);
@@ -49,6 +58,11 @@ public:
 
 	virtual void TriggerPressed_Implementation(class UMotionControllerComponent* MotionController) override;
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "GrabInterface")
+	void TriggerReleased(class UMotionControllerComponent* MotionController);
+
+	virtual void TriggerReleased_Implementation(class UMotionControllerComponent* MotionController) override;
+
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grab")
@@ -60,3 +74,4 @@ protected:
 	class UMotionControllerComponent* CurrentMotionController;
 
 };
+

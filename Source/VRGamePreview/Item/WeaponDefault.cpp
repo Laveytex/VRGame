@@ -287,6 +287,7 @@ void AWeaponDefault::InitWeapon(FName IDWeaponName)
 	}
 }
 
+
 void AWeaponDefault::Fire()
 {
 	FireTimer = WeaponSetting.RateOfFire;
