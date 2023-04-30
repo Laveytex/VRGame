@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "MainTypes.h"
-#include "GrabInterface.h"
+#include "VRGamePreview/Game/GrabInterface.h"
 
 #include "WeaponDefault.generated.h"
 
@@ -40,6 +40,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Info")
 	FAddicionalWeaponInfo WeaponInfo;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	EAttachState AttachState = EAttachState::Snap;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Grab")
 	class UMotionControllerComponent* CurrentMotionController;
@@ -128,6 +130,4 @@ protected:
 	void FireTick(float DeltaTime);
 	void ClipCheck();
 	
-
-
 };

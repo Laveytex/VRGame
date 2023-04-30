@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "GrabInterface.h"
+#include "VRGamePreview/Game/GrabInterface.h"
 
 #include "Clip.generated.h"
 

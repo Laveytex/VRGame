@@ -4,7 +4,7 @@
 #include "WeaponDefault.h"
 
 #include "Clip.h"
-#include "MainGameInstance.h"
+#include "VRGamePreview/Game/MainGameInstance.h"
 #include "NiagaraFunctionLibrary.h"
 #include "ProjectileDefault.h"
 #include "Components/ArrowComponent.h"
@@ -43,20 +43,20 @@ AWeaponDefault::AWeaponDefault()
 
 	ShootLocation = CreateDefaultSubobject<UArrowComponent>(TEXT("ShootLocation"));
 	ShootLocation->SetArrowColor(FColor::Red);
-	ShootLocation->SetupAttachment(InteractionComponent);
+	ShootLocation->SetupAttachment(SkeletalMeshWeapon);
 
 	ShellSpawnPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("SleevBullet point"));
 	ShellSpawnPoint->SetArrowColor(FColor::Green);
-	ShellSpawnPoint->SetupAttachment(InteractionComponent);
+	ShellSpawnPoint->SetupAttachment(SkeletalMeshWeapon);
 
 	ClipSpawnPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("ClipPoint"));
 	ClipSpawnPoint->SetArrowColor(FColor::Yellow);
-	ClipSpawnPoint->SetupAttachment(InteractionComponent);
+	ClipSpawnPoint->SetupAttachment(SkeletalMeshWeapon);
 
 	ClipSlot = CreateDefaultSubobject<UBoxComponent>(TEXT("ClipSlotComponent"));
 	ClipSlot->SetCollisionProfileName(TEXT("OverlapAll"));
 	ClipSlot->SetHiddenInGame(false);
-	ClipSlot->SetupAttachment(InteractionComponent);
+	ClipSlot->SetupAttachment(ClipSpawnPoint);
 
 	ClipSlot->OnComponentBeginOverlap.AddDynamic(this, &AWeaponDefault::ClipCollisionBoxHit);
 }
@@ -168,10 +168,24 @@ void AWeaponDefault::Grab_Implementation(UMotionControllerComponent* MotionContr
 		bUsing = true;
 		CurrentMotionController = MotionController;
 
-		FTransform ControllerTransform = CurrentMotionController->GetRelativeTransform();
-		
+		FTransform ControllerTransform = CurrentMotionController->GetComponentTransform();
 		InteractionComponent->SetSimulatePhysics(false);
-		InteractionComponent->AttachToComponent(MotionController, FAttachmentTransformRules::KeepWorldTransform, NAME_None);
+
+		if (AttachState == EAttachState::Snap)
+		{
+			InteractionComponent->SetWorldLocation(ControllerTransform.GetLocation()
+			- InteractionComponent->GetScaledBoxExtent().Z);
+		
+			InteractionComponent->SetWorldRotation(FRotator(
+				0, ControllerTransform.Rotator().Yaw, ControllerTransform.Rotator().Roll));
+		}
+		/*else if (AttachState == EAttachState::Free)
+		{
+			
+		}*/
+		
+		InteractionComponent->AttachToComponent(CurrentMotionController,
+			FAttachmentTransformRules::KeepWorldTransform, NAME_None);
 	}
 }
 

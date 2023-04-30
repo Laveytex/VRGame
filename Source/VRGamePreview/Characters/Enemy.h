@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "DamageTakerInterface.h"
+#include "VRGamePreview/Game/DamageTakerInterface.h"
 #include "Enemy.generated.h"
 
 UCLASS()

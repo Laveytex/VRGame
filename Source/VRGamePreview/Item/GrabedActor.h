@@ -1,7 +1,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GrabInterface.h"
+#include "MainTypes.h"
+#include "VRGamePreview/Game/GrabInterface.h"
 #include "GameFramework/Actor.h"
 #include "MotionControllerComponent.h"
 #include "GrabedActor.generated.h"
@@ -17,6 +18,9 @@ class VRGAMEPREVIEW_API AGrabedActor : public AActor, public IGrabInterface
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components)
 	class UStaticMeshComponent* StaticMesh = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	EAttachState AttachState = EAttachState::Snap;
 
 protected:
 	AGrabedActor();

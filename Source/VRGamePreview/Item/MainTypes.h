@@ -15,6 +15,13 @@ class VRGAMEPREVIEW_API UMainTypes : public  UBlueprintFunctionLibrary
 	GENERATED_BODY()
 };
 
+UENUM(BlueprintType)
+enum class EAttachState : uint8
+{
+	Snap UMETA(DisplayName = "Snap Component State"),
+	Free UMETA(DisplayName = "Free Component State")
+};
+
 USTRUCT(BlueprintType)
 struct FDropMeshInfo
 {

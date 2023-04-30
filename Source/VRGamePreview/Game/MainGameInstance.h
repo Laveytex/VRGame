@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MainTypes.h"
+#include "VRGamePreview/Item/MainTypes.h"
 #include "Engine/DataTable.h"
 #include "Engine/GameInstance.h"
 #include "MainGameInstance.generated.h"

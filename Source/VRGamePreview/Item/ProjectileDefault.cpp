@@ -5,7 +5,7 @@
 
 #include "NiagaraComponent.h"
 #include "Components/SphereComponent.h"
-#include "DamageTakerInterface.h"
+#include "VRGamePreview/Game/DamageTakerInterface.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 

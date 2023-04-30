@@ -43,10 +43,26 @@ void AGrabedActor::Grab_Implementation(UMotionControllerComponent* MotionControl
 	{
 		bUsing = true;
 		CurrentMotionController = MotionController;
-		FTransform ControllerTransform = CurrentMotionController->GetRelativeTransform();
-		
+
+		FTransform ControllerTransform = CurrentMotionController->GetComponentTransform();
 		StaticMesh->SetSimulatePhysics(false);
-		StaticMesh->AttachToComponent(MotionController, FAttachmentTransformRules::KeepWorldTransform, NAME_None);
+
+		if (AttachState == EAttachState::Snap)
+		{
+			/*StaticMesh->SetWorldLocation(ControllerTransform.GetLocation()
+			- StaticMesh->GetScaledBoxExtent().Z);
+			*/
+		
+			StaticMesh->SetWorldRotation(FRotator(
+				0, ControllerTransform.Rotator().Yaw, ControllerTransform.Rotator().Roll));
+		}
+		/*else if (AttachState == EAttachState::Free)
+		{
+			
+		}*/
+		
+		StaticMesh->AttachToComponent(CurrentMotionController,
+			FAttachmentTransformRules::KeepWorldTransform, NAME_None);
 	}
 }
 
