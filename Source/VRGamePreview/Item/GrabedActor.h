@@ -26,7 +26,7 @@ public:
 	class UBoxComponent* InteractBox = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	EAttachState AttachState = EAttachState::Snap;
+	EAttachState AttachState = EAttachState::Free;
 
 protected:
 	AGrabedActor();

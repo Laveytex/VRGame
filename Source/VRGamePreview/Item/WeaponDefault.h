@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GrabedActor.h"
 #include "GameFramework/Actor.h"
 #include "MainTypes.h"
 #include "VRGamePreview/Game/GrabInterface.h"
@@ -10,7 +11,7 @@
 #include "WeaponDefault.generated.h"
 
 UCLASS()
-class VRGAMEPREVIEW_API AWeaponDefault : public AActor, public IGrabInterface
+class VRGAMEPREVIEW_API AWeaponDefault : public AGrabedActor
 {
 	GENERATED_BODY()
 	
@@ -18,14 +19,6 @@ public:
 	// Sets default values for this actor's properties
 	AWeaponDefault();
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components)
-	class USceneComponent* SceneComponent = nullptr;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components)
-	class UBoxComponent* InteractionComponent = nullptr;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components)
-	class UStaticMeshComponent* StaticMeshWeapon = nullptr;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components)
-	class USkeletalMeshComponent* SkeletalMeshWeapon = nullptr;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components)
 	class UArrowComponent* ShootLocation = nullptr;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components)
@@ -40,11 +33,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Info")
 	FAddicionalWeaponInfo WeaponInfo;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	EAttachState AttachState = EAttachState::Snap;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Grab")
-	class UMotionControllerComponent* CurrentMotionController;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components)
 	class UHapticFeedbackEffect_Base* HapticEffect = nullptr;
@@ -67,31 +55,10 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FireLogic")
 	bool WeaponFiring  = false;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grab")
-	bool bUsing = false;
-
-	bool bSimulatePhysics = false;
 	
 public:	
 	
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "GrabInterface")
-	void Grab(class UMotionControllerComponent* MotionController);
-
-	virtual void Grab_Implementation(class UMotionControllerComponent* MotionController) override;
-	
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "GrabInterface")
-	void Drop(class UMotionControllerComponent* MotionController);
-
-	virtual void Drop_Implementation(class UMotionControllerComponent* MotionController) override;
-
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "GrabInterface")
-	void TriggerPressed (class UMotionControllerComponent* MotionController);
-
 	virtual void TriggerPressed_Implementation(class UMotionControllerComponent* MotionController) override;
-
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "GrabInterface")
-	void TriggerReleased(class UMotionControllerComponent* MotionController);
 
 	virtual void TriggerReleased_Implementation(class UMotionControllerComponent* MotionController) override;
 	

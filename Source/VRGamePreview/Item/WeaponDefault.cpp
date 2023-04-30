@@ -22,40 +22,33 @@ AWeaponDefault::AWeaponDefault()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
-	RootComponent = SceneComponent;
 	
-	InteractionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionComponent"));
-	InteractionComponent->SetCollisionProfileName(TEXT("Interact"));
-	InteractionComponent->SetBoxExtent(FVector(10));
-	InteractionComponent->SetSimulatePhysics(true);
-	InteractionComponent->SetHiddenInGame(false);
-	InteractionComponent->SetupAttachment(SceneComponent);
+	
+	InteractBox->SetBoxExtent(FVector(10));
+	InteractBox->SetSimulatePhysics(true);
+	InteractBox->SetHiddenInGame(false);
 
-	StaticMeshWeapon = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
-	StaticMeshWeapon->SetCollisionProfileName(TEXT("NoCollision"));
-	StaticMeshWeapon->SetupAttachment(InteractionComponent);
+	StaticMesh->SetCollisionProfileName(TEXT("NoCollision"));
+	
+	SkeletalMesh->SetCollisionProfileName(TEXT("NoCollision"));
 
-	SkeletalMeshWeapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Skeletal Mesh"));
-	SkeletalMeshWeapon->SetCollisionProfileName(TEXT("NoCollision"));
-	SkeletalMeshWeapon->SetupAttachment(InteractionComponent);
 
 	ShootLocation = CreateDefaultSubobject<UArrowComponent>(TEXT("ShootLocation"));
 	ShootLocation->SetArrowColor(FColor::Red);
-	ShootLocation->SetupAttachment(SkeletalMeshWeapon);
+	ShootLocation->SetupAttachment(SkeletalMesh);
 
 	ShellSpawnPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("SleevBullet point"));
 	ShellSpawnPoint->SetArrowColor(FColor::Green);
-	ShellSpawnPoint->SetupAttachment(SkeletalMeshWeapon);
+	ShellSpawnPoint->SetupAttachment(SkeletalMesh);
 
 	ClipSpawnPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("ClipPoint"));
 	ClipSpawnPoint->SetArrowColor(FColor::Yellow);
-	ClipSpawnPoint->SetupAttachment(SkeletalMeshWeapon);
+	ClipSpawnPoint->SetupAttachment(SkeletalMesh);
 
 	ClipSlot = CreateDefaultSubobject<UBoxComponent>(TEXT("ClipSlotComponent"));
 	ClipSlot->SetCollisionProfileName(TEXT("OverlapAll"));
 	ClipSlot->SetHiddenInGame(false);
+	ClipSlot->SetBoxExtent(FVector(5));
 	ClipSlot->SetupAttachment(ClipSpawnPoint);
 
 	ClipSlot->OnComponentBeginOverlap.AddDynamic(this, &AWeaponDefault::ClipCollisionBoxHit);
@@ -65,7 +58,7 @@ AWeaponDefault::AWeaponDefault()
 void AWeaponDefault::BeginPlay()
 {
 	Super::BeginPlay();
-	bSimulatePhysics = InteractionComponent->IsSimulatingPhysics();
+	bSimulatePhysics = InteractBox->IsSimulatingPhysics();
 	
 	InitWeapon(InitWeaponName);	
 }
@@ -161,49 +154,6 @@ void AWeaponDefault::Tick(float DeltaTime)
 	ClipCheck();
 }
 
-void AWeaponDefault::Grab_Implementation(UMotionControllerComponent* MotionController)
-{
-	if (!bUsing)
-	{
-		bUsing = true;
-		CurrentMotionController = MotionController;
-
-		FTransform ControllerTransform = CurrentMotionController->GetComponentTransform();
-		InteractionComponent->SetSimulatePhysics(false);
-
-		if (AttachState == EAttachState::Snap)
-		{
-			InteractionComponent->SetWorldLocation(ControllerTransform.GetLocation()
-			- InteractionComponent->GetScaledBoxExtent().Z);
-		
-			InteractionComponent->SetWorldRotation(FRotator(
-				0, ControllerTransform.Rotator().Yaw, ControllerTransform.Rotator().Roll));
-		}
-		/*else if (AttachState == EAttachState::Free)
-		{
-			
-		}*/
-		
-		InteractionComponent->AttachToComponent(CurrentMotionController,
-			FAttachmentTransformRules::KeepWorldTransform, NAME_None);
-	}
-}
-
-void AWeaponDefault::Drop_Implementation(UMotionControllerComponent* MotionController)
-{
-	if ((MotionController == nullptr) || (CurrentMotionController == MotionController))
-	{
-		bUsing = false;
-
-		InteractionComponent->SetSimulatePhysics(bSimulatePhysics);
-		CurrentMotionController = nullptr;
-		
-		InteractionComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-	}
-	SetWeaponStateFire(false);
-}
-
-
 void AWeaponDefault::FireTick(float DeltaTime)
 {
 	if (GetWeaponRound() > 0)
@@ -261,16 +211,6 @@ void AWeaponDefault::SetWeaponStateFire(bool bIsFire)
 
 void AWeaponDefault::InitWeapon(FName IDWeaponName)
 {
-	if (SkeletalMeshWeapon && !IsValid(SkeletalMeshWeapon))
-	{
-		SkeletalMeshWeapon->DestroyComponent(true);
-	}
-
-	if (StaticMeshWeapon && !StaticMeshWeapon->GetStaticMesh())
-	{
-		StaticMeshWeapon->DestroyComponent(true);
-	}
-	
 	UMainGameInstance* myGI = Cast<UMainGameInstance>(GetGameInstance());
 	
 	if (myGI)
