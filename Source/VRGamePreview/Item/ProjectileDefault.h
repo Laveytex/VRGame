@@ -27,7 +27,7 @@ public:
 protected:
 	FProjectileInfo ProjectileSetting;
 	
-	int ProjectileDamage = 10;
+	int32 ProjectileDamage = 10;
 	
 public:	
 	UFUNCTION()
@@ -44,8 +44,5 @@ protected:
 	UFUNCTION()
 		void BulletCollisionSphereHit(class UPrimitiveComponent* HitComp, AActor* OtherActor,
 			UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-
 	
-
-
 };

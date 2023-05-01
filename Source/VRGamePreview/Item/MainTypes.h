@@ -53,9 +53,9 @@ struct FProjectileInfo
 	UNiagaraSystem* TrailFXNi = nullptr;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProjectileSetting")
-	float ProjectileMinDamage = 20.0f;
+	int ProjectileMinDamage = 20;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProjectileSetting")
-	float ProjectileMaxDamage = 20.0f;
+	int ProjectileMaxDamage = 20;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProjectileSetting")
 	float ProjectileLifeTime = 20.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProjectileSetting")

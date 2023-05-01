@@ -16,33 +16,34 @@ public:
 	// Sets default values for this character's properties
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components)
 	class USceneComponent* SceneComponent = nullptr;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components)
-	class UCapsuleComponent* CollideComponent = nullptr;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	class UHealthComponent* HealthComponent;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Health)
 	float MaxHealth = 100.0f;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Health)
 	float CurrenHealth = 100.0f;
+	
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 	
 	AEnemy();
-	
-	virtual void Tick(float DeltaTime) override;
-	
-	// Flags
-	bool isDie = false;
 
-	void Die();
 
 public:
 	
-	void ApplyDamage(float IncomingDamage);
+	void TakeDamage(int IncomingDamage);
+
+	UFUNCTION()
+	void Die();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnTakeDamage(float Damage);
+	void TakeDamageBP(int Damage);
 	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
+protected:
+	
+	bool IsDead = false;
 };

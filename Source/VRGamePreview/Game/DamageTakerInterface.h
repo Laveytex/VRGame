@@ -20,5 +20,5 @@ class VRGAMEPREVIEW_API IDamageTakerInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 	public:
 	
-	virtual void ApplyDamage(float IncomingDamage) = 0;
+	virtual void TakeDamage(int32 IncomingDamage) = 0;
 };

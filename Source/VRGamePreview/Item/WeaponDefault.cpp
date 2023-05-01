@@ -13,6 +13,7 @@
 #include "Haptics/HapticFeedbackEffect_Base.h"
 #include "XRMotionControllerBase.h"
 #include "IXRTrackingSystem.h"
+#include "Components/WidgetComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -50,6 +51,9 @@ AWeaponDefault::AWeaponDefault()
 	ClipSlot->SetHiddenInGame(false);
 	ClipSlot->SetBoxExtent(FVector(5));
 	ClipSlot->SetupAttachment(ClipSpawnPoint);
+
+	BulletWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Bullet Widget"));
+	BulletWidget->SetupAttachment(SkeletalMesh);
 
 	ClipSlot->OnComponentBeginOverlap.AddDynamic(this, &AWeaponDefault::ClipCollisionBoxHit);
 }
@@ -161,7 +165,6 @@ void AWeaponDefault::FireTick(float DeltaTime)
 		if (WeaponFiring)
 			if (FireTimer < 0.f)
 			{
-				
 				Fire();
 				if(WeaponSetting.isSingleShoot)
 				{
@@ -227,7 +230,6 @@ void AWeaponDefault::InitWeapon(FName IDWeaponName)
 	}
 }
 
-
 void AWeaponDefault::Fire()
 {
 	FireTimer = WeaponSetting.RateOfFire;
@@ -273,12 +275,12 @@ FProjectileInfo AWeaponDefault::GetProjectile()
 	return  WeaponSetting.ProjectileSetting;
 }
 
-int32 AWeaponDefault::GetWeaponRound()
+int32 AWeaponDefault::GetWeaponRound() const
 {
 	return WeaponInfo.Round;
 }
 
-int32 AWeaponDefault::SetWeaponRound(int RoundToSet)
+int32 AWeaponDefault::SetWeaponRound(int32 RoundToSet)
 {
 	return WeaponInfo.Round = RoundToSet;
 }

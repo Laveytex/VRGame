@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Enemy.h"
+
+#include "HealthComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -11,43 +13,31 @@ AEnemy::AEnemy()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
-	CollideComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CollideComponent"));
-	CollideComponent->SetupAttachment(GetCapsuleComponent());
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health component"));
+	HealthComponent->OnDie.AddUObject(this, &AEnemy::Die);
+	HealthComponent->OnDamage.AddUObject(this, &AEnemy::TakeDamage);
+
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
 
 
-void AEnemy::ApplyDamage(float IncomingDamage)
+void AEnemy::TakeDamage(int IncomingDamage)
 {
-	if (!isDie)
+	if (!IsDead)
 	{
-		OnTakeDamage(IncomingDamage);
-		CurrenHealth = CurrenHealth - IncomingDamage;
-	}
-	if (CurrenHealth <= 0)
-	{
-		isDie = true;
-		Die();
+		HealthComponent->TakeDamage(IncomingDamage);
+		TakeDamageBP(IncomingDamage);
 	}
 }
 
 void AEnemy::Die()
 {
-		GetMesh()->SetAllBodiesSimulatePhysics(true);
-		GetMesh()->SetCollisionProfileName(TEXT("Ragdall"));
-		CollideComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		GetMovementComponent()->StopActiveMovement();
-}
-
-// Called when the game starts or when spawned
-void AEnemy::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-// Called every frame
-void AEnemy::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
+	IsDead = true;
+	
+	GetCapsuleComponent()->DestroyComponent();
+	GetMesh()->SetAllBodiesSimulatePhysics(true);
+	GetMesh()->SetCollisionProfileName(TEXT("Ragdall"));
+	GetMovementComponent()->StopActiveMovement();
 }
 
 // Called to bind functionality to input

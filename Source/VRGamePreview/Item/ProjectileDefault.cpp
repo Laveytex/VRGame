@@ -67,7 +67,7 @@ void AProjectileDefault::BulletCollisionSphereHit(UPrimitiveComponent* HitComp, 
 	
 	if (damageTakerActor)
 	{
-		damageTakerActor->ApplyDamage(ProjectileDamage);
+		damageTakerActor->TakeDamage(ProjectileDamage);
 	}
 	
 	ImpactProjectile();

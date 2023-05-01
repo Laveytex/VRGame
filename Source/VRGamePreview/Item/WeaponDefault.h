@@ -27,6 +27,8 @@ public:
 	class UArrowComponent* ClipSpawnPoint = nullptr;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components)
 	class UBoxComponent* ClipSlot = nullptr;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components)
+	class UWidgetComponent* BulletWidget = nullptr;
 
 	UPROPERTY()
 	FWeaponInfo WeaponSetting;
@@ -68,7 +70,7 @@ public:
 	void Fire();
 
 	UFUNCTION(BlueprintCallable)
-	int32 GetWeaponRound();
+	int32 GetWeaponRound() const;
 	UFUNCTION(BlueprintCallable)
 	int32 SetWeaponRound(int RoundToSet);
 
